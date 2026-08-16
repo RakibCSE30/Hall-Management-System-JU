@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Jahangirnagar University Hall Management System" />
+  <title>JU Hall Management System</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-mark">JU</div>
+        <div>
+          <strong>HallMS</strong>
+          <span>Jahangirnagar University</span>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="Main navigation">
+        <button class="nav-item active" data-section="dashboard"><span>⌂</span> Dashboard</button>
+        <button class="nav-item" data-section="students"><span>♙</span> Students</button>
+        <button class="nav-item" data-section="rooms"><span>▦</span> Rooms & Seats</button>
+        <button class="nav-item" data-section="applications"><span>✎</span> Applications</button>
+        <button class="nav-item" data-section="complaints"><span>⚑</span> Complaints</button>
+        <button class="nav-item" data-section="notices"><span>◈</span> Notices</button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="hall-mini">
+          <span class="status-dot"></span>
+          <div><strong>Nazrul Islam Hall</strong><small>System online</small></div>
+        </div>
+        <button class="logout" id="logoutBtn">↪ Sign out</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="menu-btn" id="menuBtn" aria-label="Toggle menu">☰</button>
+        <div>
+          <p class="eyebrow">HALL ADMINISTRATION</p>
+          <h1 id="pageTitle">Dashboard</h1>
+        </div>
+        <div class="top-actions">
+          <button class="icon-btn" title="Notifications" id="notificationBtn">🔔<span class="notification-badge">3</span></button>
+          <div class="profile-chip">
+            <div class="avatar">A</div>
+            <div><strong>Administrator</strong><small>Hall Office</small></div>
+          </div>
+        </div>
+      </header>
+
+      <div class="content">
+        <section class="section-view active" id="dashboard">
+          <div class="welcome-row">
+            <div>
+              <h2>Good morning, Administrator 👋</h2>
+              <p>Here is the current overview of your hall operations.</p>
+            </div>
+            <button class="primary-btn" id="quickNotice">＋ New Notice</button>
+          </div>
+
+          <div class="stat-grid">
+            <article class="stat-card"><div class="stat-icon blue">♙</div><div><span>Total Students</span><strong>842</strong><small class="positive">↑ 6.2% this month</small></div></article>
+            <article class="stat-card"><div class="stat-icon purple">▦</div><div><span>Room Capacity</span><strong>1,000</strong><small>250 rooms × 4 seats</small></div></article>
+            <article class="stat-card"><div class="stat-icon green">✓</div><div><span>Occupied Seats</span><strong>842</strong><small class="positive">84.2% occupancy</small></div></article>
+            <article class="stat-card"><div class="stat-icon orange">!</div><div><span>Pending Requests</span><strong>27</strong><small class="warning">Needs attention</small></div></article>
+          </div>
+
+          <div class="dashboard-grid">
+            <article class="panel occupancy-panel">
+              <div class="panel-head"><div><h3>Hall Occupancy</h3><p>Current room and seat utilization</p></div><button class="text-btn" data-section-link="rooms">View rooms →</button></div>
+              <div class="occupancy-body">
+                <div class="donut" style="--value:84.2"><div><strong>84.2%</strong><span>Occupied</span></div></div>
+                <div class="legend"><div><span class="legend-dot occupied"></span><span>Occupied</span><strong>842</strong></div><div><span class="legend-dot vacant"></span><span>Vacant</span><strong>158</strong></div><div><span class="legend-dot pending"></span><span>Maintenance</span><strong>12</strong></div></div>
+              </div>
+            </article>
+
+            <article class="panel requests-panel">
+              <div class="panel-head"><div><h3>Recent Applications</h3><p>Latest student requests</p></div><button class="text-btn" data-section-link="applications">View all →</button></div>
+              <div class="request-list">
+                <div class="request"><div class="avatar small">RS</div><div class="request-info"><strong>Rakibul Hasan</strong><span>Seat allocation · CSE</span></div><span class="pill pending">Pending</span></div>
+                <div class="request"><div class="avatar small">MA</div><div class="request-info"><strong>Md. Arafat</strong><span>Room transfer · Physics</span></div><span class="pill review">Review</span></div>
+                <div class="request"><div class="avatar small">SN</div><div class="request-info"><strong>Saiful Noor</strong><span>Seat allocation · IBA-JU</span></div><span class="pill approved">Approved</span></div>
+                <div class="request"><div class="avatar small">TH</div><div class="request-info"><strong>Tanjim Hossain</strong><span>Room transfer · Math</span></div><span class="pill pending">Pending</span></div>
+              </div>
+            </article>
+          </div>
+
+          <div class="dashboard-grid bottom-grid">
+            <article class="panel"><div class="panel-head"><div><h3>Recent Complaints</h3><p>Issues reported by residents</p></div><button class="text-btn" data-section-link="complaints">View all →</button></div>
+              <div class="table-wrap"><table><thead><tr><th>Student</th><th>Issue</th><th>Room</th><th>Status</th></tr></thead><tbody>
+                <tr><td>Mehedi Hasan</td><td>Water supply</td><td>F4-R12</td><td><span class="pill pending">Open</span></td></tr>
+                <tr><td>Fahim Rahman</td><td>Ceiling fan</td><td>F7-R08</td><td><span class="pill review">In progress</span></td></tr>
+                <tr><td>Shakil Ahmed</td><td>Wi-Fi issue</td><td>F3-R21</td><td><span class="pill approved">Resolved</span></td></tr>
+              </tbody></table></div>
+            </article>
+
+            <article class="panel notice-panel"><div class="panel-head"><div><h3>Latest Notices</h3><p>Hall office announcements</p></div><button class="text-btn" data-section-link="notices">Manage →</button></div>
+              <div class="notice-list">
+                <div><span class="notice-date">17<br><small>AUG</small></span><div><strong>Monthly dining fee notice</strong><p>Payment deadline: 25 August</p></div></div>
+                <div><span class="notice-date">15<br><small>AUG</small></span><div><strong>Room inspection schedule</strong><p>Inspection starts from 20 August</p></div></div>
+                <div><span class="notice-date">12<br><small>AUG</small></span><div><strong>Hall office timing</strong><p>Office remains open 9 AM–4 PM</p></div></div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="section-view" id="students"><div class="section-header"><div><h2>Students</h2><p>Manage residents and their hall information.</p></div><button class="primary-btn">＋ Add Student</button></div><div class="panel"><div class="toolbar"><input id="studentSearch" placeholder="Search by name, ID or department…" /><select><option>All departments</option><option>CSE</option><option>Physics</option><option>Mathematics</option></select></div><div class="table-wrap"><table><thead><tr><th>Student</th><th>ID</th><th>Department</th><th>Room</th><th>Seat</th><th>Status</th></tr></thead><tbody id="studentRows"></tbody></table></div></div></section>
+
+        <section class="section-view" id="rooms"><div class="section-header"><div><h2>Rooms & Seats</h2><p>Monitor the 250 residential rooms and 1,000 seats.</p></div><button class="secondary-btn" id="filterVacant">Show vacant seats</button></div><div class="room-grid" id="roomGrid"></div></section>
+
+        <section class="section-view" id="applications"><div class="section-header"><div><h2>Applications</h2><p>Review seat allocation and room transfer requests.</p></div><button class="primary-btn">Export report</button></div><div class="panel"><div class="table-wrap"><table><thead><tr><th>Applicant</th><th>Request</th><th>Department</th><th>Date</th><th>Status</th><th>Action</th></tr></thead><tbody id="applicationRows"></tbody></table></div></div></section>
+
+        <section class="section-view" id="complaints"><div class="section-header"><div><h2>Complaints</h2><p>Track and resolve resident issues.</p></div><button class="primary-btn">＋ New complaint</button></div><div class="panel"><div class="table-wrap"><table><thead><tr><th>Student</th><th>Issue</th><th>Room</th><th>Submitted</th><th>Priority</th><th>Status</th></tr></thead><tbody id="complaintRows"></tbody></table></div></div></section>
+
+        <section class="section-view" id="notices"><div class="section-header"><div><h2>Notices</h2><p>Publish announcements for hall residents.</p></div><button class="primary-btn" id="newNotice">＋ Create Notice</button></div><div class="notice-cards" id="noticeCards"></div></section>
+      </div>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
