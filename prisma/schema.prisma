@@ -1,0 +1,269 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role { SUPER_ADMIN HALL_ADMIN STAFF STUDENT }
+enum Gender { MALE FEMALE OTHER }
+enum RoomStatus { ACTIVE MAINTENANCE }
+enum SeatStatus { AVAILABLE OCCUPIED MAINTENANCE }
+enum ApplicationStatus { PENDING APPROVED REJECTED CANCELLED }
+enum TransferStatus { PENDING APPROVED REJECTED CANCELLED COMPLETED }
+enum ComplaintPriority { LOW MEDIUM HIGH URGENT }
+enum ComplaintStatus { SUBMITTED UNDER_REVIEW IN_PROGRESS RESOLVED REJECTED CLOSED }
+enum PaymentStatus { PENDING PAID FAILED CANCELLED }
+enum NoticeType { HALL UNIVERSITY IMPORTANT EMERGENCY }
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         Role     @default(STUDENT)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  student      Student?
+  staff        HallStaff?
+  auditLogs    AuditLog[]
+}
+
+model Student {
+  id                 String           @id @default(cuid())
+  userId             String           @unique
+  studentId          String           @unique
+  registrationNumber String?          @unique
+  department         String
+  faculty            String?
+  session            String?
+  academicYear       String?
+  phone              String?
+  gender             Gender
+  bloodGroup         String?
+  guardianName       String?
+  guardianPhone      String?
+  address            String?
+  hallId             String?
+  user               User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  hall               Hall?            @relation(fields: [hallId], references: [id], onDelete: SetNull)
+  applications       HallApplication[]
+  allocations        SeatAllocation[]
+  transfers          RoomTransfer[]
+  complaints         Complaint[]
+  payments           Payment[]
+  notifications      Notification[]
+  residenceHistory   ResidenceHistory[]
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+}
+
+model Hall {
+  id          String      @id @default(cuid())
+  name        String
+  code        String      @unique
+  university  String      @default("Jahangirnagar University")
+  location    String?
+  gender      Gender?
+  floors      Floor[]
+  students    Student[]
+  staff       HallStaff[]
+  facilities  Facility[]
+  notices     Notice[]
+  complaints  Complaint[]
+  rooms       Room[]
+  applications HallApplication[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model HallStaff {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  hallId    String
+  position  String?
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  hall      Hall     @relation(fields: [hallId], references: [id], onDelete: Cascade)
+  complaints Complaint[]
+  reviewedApplications HallApplication[] @relation("ApplicationReviewer")
+  reviewedTransfers RoomTransfer[] @relation("TransferReviewer")
+  createdAt DateTime @default(now())
+}
+
+model Floor {
+  id       String  @id @default(cuid())
+  hallId   String
+  number   Int
+  name     String?
+  hall     Hall    @relation(fields: [hallId], references: [id], onDelete: Cascade)
+  rooms    Room[]
+  @@unique([hallId, number])
+}
+
+model Room {
+  id          String     @id @default(cuid())
+  hallId      String
+  floorId     String
+  code        String
+  capacity    Int        @default(4)
+  status      RoomStatus @default(ACTIVE)
+  hall        Hall       @relation(fields: [hallId], references: [id], onDelete: Cascade)
+  floor       Floor      @relation(fields: [floorId], references: [id], onDelete: Cascade)
+  seats       Seat[]
+  allocations SeatAllocation[]
+  complaints  Complaint[]
+  @@unique([hallId, code])
+}
+
+model Seat {
+  id          String      @id @default(cuid())
+  roomId      String
+  number      Int
+  status      SeatStatus  @default(AVAILABLE)
+  room        Room        @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  allocations SeatAllocation[]
+  @@unique([roomId, number])
+}
+
+model SeatAllocation {
+  id          String    @id @default(cuid())
+  studentId   String
+  roomId      String
+  seatId      String
+  startDate   DateTime  @default(now())
+  endDate     DateTime?
+  isActive    Boolean   @default(true)
+  student     Student   @relation(fields: [studentId], references: [id], onDelete: Restrict)
+  room        Room      @relation(fields: [roomId], references: [id], onDelete: Restrict)
+  seat        Seat      @relation(fields: [seatId], references: [id], onDelete: Restrict)
+  @@index([studentId, isActive])
+  @@index([seatId, isActive])
+}
+
+model HallApplication {
+  id          String            @id @default(cuid())
+  studentId   String
+  hallId      String
+  status      ApplicationStatus @default(PENDING)
+  remarks     String?
+  reviewedAt  DateTime?
+  reviewerId  String?
+  createdAt   DateTime          @default(now())
+  student     Student           @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  hall        Hall              @relation(fields: [hallId], references: [id], onDelete: Cascade)
+  reviewer    HallStaff?        @relation("ApplicationReviewer", fields: [reviewerId], references: [id], onDelete: SetNull)
+  @@index([hallId, status])
+}
+
+model RoomTransfer {
+  id             String         @id @default(cuid())
+  studentId      String
+  fromRoomId     String?
+  toRoomId       String?
+  status         TransferStatus @default(PENDING)
+  reason         String?
+  remarks        String?
+  reviewerId     String?
+  createdAt      DateTime       @default(now())
+  reviewedAt     DateTime?
+  student        Student        @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  reviewer       HallStaff?     @relation("TransferReviewer", fields: [reviewerId], references: [id], onDelete: SetNull)
+}
+
+model Complaint {
+  id          String            @id @default(cuid())
+  trackingId  String            @unique
+  studentId   String
+  hallId      String
+  roomId      String?
+  assignedToId String?
+  category    String
+  title       String
+  description String
+  priority    ComplaintPriority  @default(MEDIUM)
+  status      ComplaintStatus    @default(SUBMITTED)
+  resolution  String?
+  createdAt   DateTime           @default(now())
+  resolvedAt  DateTime?
+  student     Student            @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  hall        Hall               @relation(fields: [hallId], references: [id], onDelete: Cascade)
+  room        Room?              @relation(fields: [roomId], references: [id], onDelete: SetNull)
+  assignedTo  HallStaff?         @relation(fields: [assignedToId], references: [id], onDelete: SetNull)
+}
+
+model Notice {
+  id          String     @id @default(cuid())
+  hallId      String?
+  title       String
+  content     String
+  type        NoticeType @default(HALL)
+  isPublished Boolean    @default(true)
+  publishedAt DateTime   @default(now())
+  createdAt   DateTime   @default(now())
+  hall        Hall?      @relation(fields: [hallId], references: [id], onDelete: Cascade)
+  notifications Notification[]
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  studentId String
+  noticeId  String?
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  notice    Notice?  @relation(fields: [noticeId], references: [id], onDelete: SetNull)
+}
+
+model Payment {
+  id            String        @id @default(cuid())
+  studentId     String
+  type          String
+  amount        Decimal       @db.Decimal(12, 2)
+  transactionId String?       @unique
+  status        PaymentStatus @default(PENDING)
+  paidAt        DateTime?
+  createdAt     DateTime      @default(now())
+  student       Student       @relation(fields: [studentId], references: [id], onDelete: Cascade)
+}
+
+model Facility {
+  id          String   @id @default(cuid())
+  hallId      String
+  name        String
+  type        String
+  description String?
+  location    String?
+  openingHours String?
+  rules       String?
+  isActive    Boolean  @default(true)
+  hall        Hall     @relation(fields: [hallId], references: [id], onDelete: Cascade)
+}
+
+model ResidenceHistory {
+  id        String    @id @default(cuid())
+  studentId String
+  hallName  String
+  roomCode  String
+  seatNumber Int
+  startDate DateTime
+  endDate   DateTime?
+  status    String    @default("ACTIVE")
+  student   Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  action    String
+  entity    String
+  entityId  String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  @@index([entity, entityId])
+}
