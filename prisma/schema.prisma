@@ -7,16 +7,74 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Role { SUPER_ADMIN HALL_ADMIN STAFF STUDENT }
-enum Gender { MALE FEMALE OTHER }
-enum RoomStatus { ACTIVE MAINTENANCE }
-enum SeatStatus { AVAILABLE OCCUPIED MAINTENANCE }
-enum ApplicationStatus { PENDING APPROVED REJECTED CANCELLED }
-enum TransferStatus { PENDING APPROVED REJECTED CANCELLED COMPLETED }
-enum ComplaintPriority { LOW MEDIUM HIGH URGENT }
-enum ComplaintStatus { SUBMITTED UNDER_REVIEW IN_PROGRESS RESOLVED REJECTED CLOSED }
-enum PaymentStatus { PENDING PAID FAILED CANCELLED }
-enum NoticeType { HALL UNIVERSITY IMPORTANT EMERGENCY }
+enum Role {
+  SUPER_ADMIN
+  HALL_ADMIN
+  STAFF
+  STUDENT
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum RoomStatus {
+  ACTIVE
+  MAINTENANCE
+}
+
+enum SeatStatus {
+  AVAILABLE
+  OCCUPIED
+  MAINTENANCE
+}
+
+enum ApplicationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+enum TransferStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+  COMPLETED
+}
+
+enum ComplaintPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum ComplaintStatus {
+  SUBMITTED
+  UNDER_REVIEW
+  IN_PROGRESS
+  RESOLVED
+  REJECTED
+  CLOSED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  CANCELLED
+}
+
+enum NoticeType {
+  HALL
+  UNIVERSITY
+  IMPORTANT
+  EMERGENCY
+}
 
 model User {
   id           String   @id @default(cuid())
