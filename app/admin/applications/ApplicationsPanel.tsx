@@ -14,6 +14,7 @@ interface Room {
   id: string;
   code: string;
   hall: string;
+  vacant: number;
   seats: { id: string; number: number; occupied: boolean }[];
 }
 
