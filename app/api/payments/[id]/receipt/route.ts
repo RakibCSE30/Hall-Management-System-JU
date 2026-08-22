@@ -10,5 +10,5 @@ export async function GET(_: Request, { params }: { params: Promise<{ id: string
   if (!payment) return NextResponse.json({ error: "Payment not found" }, { status: 404 });
   if (session.user.role === "STUDENT" && payment.student.userId !== session.user.id) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   if (payment.status !== "PAID") return NextResponse.json({ error: "Receipt is available only for paid payments" }, { status: 409 });
-  return NextResponse.json({ receiptNo: `JU-HALL-${payment.id.slice(-8).toUpperCase()}`, student: payment.student.user.name, studentId: payment.student.studentId, hall: payment.student.hall?.name ?? "Not assigned", amount: Number(payment.amount), purpose: payment.purpose, method: payment.method, reference: payment.reference, paidAt: payment.paidAt, status: payment.status });
+  return NextResponse.json({ receiptNo: `JU-HALL-${payment.id.slice(-8).toUpperCase()}`, student: payment.student.user.name, studentId: payment.student.studentId, hall: payment.student.hall?.name ?? "Not assigned", amount: Number(payment.amount), type: payment.type, transactionId: payment.transactionId, paidAt: payment.paidAt, status: payment.status });
 }
