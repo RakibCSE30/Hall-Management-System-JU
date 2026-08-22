@@ -16,7 +16,7 @@ export async function POST(req: Request) {
   if (!student) return NextResponse.json({ error: "Student profile not found" }, { status: 404 });
   const body = await req.json();
   const amount = Number(body.amount);
-  if (!amount || amount <= 0 || !body.purpose) return NextResponse.json({ error: "Valid amount and purpose are required" }, { status: 400 });
-  const payment = await prisma.payment.create({ data: { studentId: student.id, amount, purpose: body.purpose, method: body.method ?? "ONLINE", reference: body.reference ?? null, status: "PENDING" } });
+  if (!amount || amount <= 0 || !body.type) return NextResponse.json({ error: "Valid amount and payment type are required" }, { status: 400 });
+  const payment = await prisma.payment.create({ data: { studentId: student.id, amount, type: body.type, transactionId: body.transactionId ?? null, status: "PENDING" } });
   return NextResponse.json(payment, { status: 201 });
 }
