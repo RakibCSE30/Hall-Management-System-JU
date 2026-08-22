@@ -22,6 +22,8 @@ export default async function StudentPage() {
   if (!student) redirect("/login");
 
   const allocation = student.allocations[0];
+  const hasActiveApplication = student.applications.some((application) => ["PENDING", "APPROVED"].includes(application.status));
+
   return (
     <main className="portal-page">
       <header className="portal-header">
@@ -37,9 +39,9 @@ export default async function StudentPage() {
         <a className="secondary-btn" href="/">Home</a>
       </section>
       <div className="portal-grid">
-        <article className="portal-card allocation"><h3>My Seat</h3>{allocation ? <><strong>{allocation.room.code} · Seat {allocation.seat.number}</strong><p>{student.hall?.name ?? "Hall"}</p><small>Allocated {new Date(allocation.startDate).toLocaleDateString()}</small></> : <><strong>No active allocation</strong><p>You do not currently have an allocated seat.</p><a href="#applications">Apply for a seat</a></>}</article>
+        <article className="portal-card allocation"><h3>My Seat</h3>{allocation ? <><strong>{allocation.room.code} · Seat {allocation.seat.number}</strong><p>{student.hall?.name ?? "Hall"}</p><small>Allocated {new Date(allocation.startDate).toLocaleDateString()}</small></> : <><strong>No active allocation</strong><p>You do not currently have an allocated seat.</p>{hasActiveApplication ? <a href="#applications">View application status</a> : <a href="/student/apply">Apply for a seat</a>}</>}</article>
         <article className="portal-card"><h3>Profile</h3><div className="detail-list"><span>Student ID <b>{student.studentId}</b></span><span>Department <b>{student.department}</b></span><span>Phone <b>{student.phone ?? "Not added"}</b></span><span>Hall <b>{student.hall?.name ?? "Not assigned"}</b></span></div></article>
-        <article className="portal-card" id="applications"><h3>Applications</h3>{student.applications.length ? student.applications.map(a => <div className="portal-row" key={a.id}><div><strong>{a.hall.name}</strong><small>{new Date(a.createdAt).toLocaleDateString()}</small></div><span className={`pill ${a.status === "APPROVED" ? "approved" : a.status === "REJECTED" ? "danger" : "pending"}`}>{a.status}</span></div>) : <p className="muted">No applications yet.</p>}</article>
+        <article className="portal-card" id="applications"><h3>Applications</h3>{student.applications.length ? <>{student.applications.map(a => <div className="portal-row" key={a.id}><div><strong>{a.hall.name}</strong><small>{new Date(a.createdAt).toLocaleDateString()}</small></div><span className={`pill ${a.status === "APPROVED" ? "approved" : a.status === "REJECTED" ? "danger" : "pending"}`}>{a.status}</span></div>)}{!hasActiveApplication && !allocation && student.hallId && <a className="primary-btn" href="/student/apply" style={{ display: "inline-block", marginTop: 14 }}>Apply for a seat</a>}</> : <><p className="muted">No applications yet.</p>{!allocation && student.hallId && <a className="primary-btn" href="/student/apply" style={{ display: "inline-block", marginTop: 10 }}>Start application</a>}</>}</article>
         <article className="portal-card"><h3>Complaints</h3>{student.complaints.length ? student.complaints.map(c => <div className="portal-row" key={c.id}><div><strong>{c.title}</strong><small>{c.trackingId}</small></div><span className="pill review">{c.status.replaceAll("_", " ")}</span></div>) : <p className="muted">No complaints yet.</p>}</article>
         <article className="portal-card full-card"><h3>Notifications</h3>{student.notifications.length ? student.notifications.map(n => <div className="notification-row" key={n.id}><span>●</span><div><strong>{n.title}</strong><p>{n.message}</p><small>{new Date(n.createdAt).toLocaleDateString()}</small></div></div>) : <p className="muted">No notifications.</p>}</article>
       </div>
