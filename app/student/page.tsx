@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { SignOutButton } from "@/app/components/SignOutButton";
 
 export default async function StudentPage() {
   const session = await auth();
@@ -25,9 +26,16 @@ export default async function StudentPage() {
     <main className="portal-page">
       <header className="portal-header">
         <div><p className="eyebrow">JAHANGIRNAGAR UNIVERSITY</p><h1>Student Portal</h1></div>
-        <div className="profile-chip"><div className="avatar">{student.user.name.charAt(0)}</div><div><strong>{student.user.name}</strong><small>{student.studentId}</small></div></div>
+        <div className="profile-chip">
+          <div className="avatar">{student.user.name.charAt(0)}</div>
+          <div><strong>{student.user.name}</strong><small>{student.studentId}</small></div>
+          <SignOutButton />
+        </div>
       </header>
-      <section className="portal-hero"><div><span className="pill approved">ACTIVE STUDENT</span><h2>Welcome, {student.user.name.split(" ")[0]} 👋</h2><p>{student.department} · {student.session ?? "Current session"}</p></div><a className="secondary-btn" href="/">Home</a></section>
+      <section className="portal-hero">
+        <div><span className="pill approved">ACTIVE STUDENT</span><h2>Welcome, {student.user.name.split(" ")[0]} 👋</h2><p>{student.department} · {student.session ?? "Current session"}</p></div>
+        <a className="secondary-btn" href="/">Home</a>
+      </section>
       <div className="portal-grid">
         <article className="portal-card allocation"><h3>My Seat</h3>{allocation ? <><strong>{allocation.room.code} · Seat {allocation.seat.number}</strong><p>{student.hall?.name ?? "Hall"}</p><small>Allocated {new Date(allocation.startDate).toLocaleDateString()}</small></> : <><strong>No active allocation</strong><p>You do not currently have an allocated seat.</p><a href="#applications">Apply for a seat</a></>}</article>
         <article className="portal-card"><h3>Profile</h3><div className="detail-list"><span>Student ID <b>{student.studentId}</b></span><span>Department <b>{student.department}</b></span><span>Phone <b>{student.phone ?? "Not added"}</b></span><span>Hall <b>{student.hall?.name ?? "Not assigned"}</b></span></div></article>
