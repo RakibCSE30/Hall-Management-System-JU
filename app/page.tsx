@@ -1,22 +1,31 @@
-export default function HomePage() {
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
+
+export default async function HomePage() {
+  const session = await auth();
+  if (session?.user) redirect("/dashboard");
+
   return (
-    <main style={{ fontFamily: "system-ui", maxWidth: 760, margin: "80px auto", padding: 24 }}>
-      <p style={{ letterSpacing: 2, fontSize: 12, color: "#64748b" }}>JAHANGIRNAGAR UNIVERSITY</p>
-      <h1>Hall Management System</h1>
-      <p style={{ color: "#64748b", lineHeight: 1.7 }}>
-        Version 0.2 backend foundation is ready with PostgreSQL, Prisma, Auth.js credentials authentication,
-        role-based sessions, and protected dashboard statistics.
-      </p>
-      <ul style={{ lineHeight: 1.9 }}>
-        <li>PostgreSQL + Prisma data model</li>
-        <li>Admin and Student roles</li>
-        <li>Secure password hashing</li>
-        <li>Health endpoint: <code>/api/health</code></li>
-        <li>Protected statistics endpoint: <code>/api/dashboard</code></li>
-      </ul>
-      <p style={{ marginTop: 32 }}>
-        The existing static dashboard remains available as the first UI prototype while the Next.js application is being migrated.
-      </p>
+    <main className="landing-page">
+      <section className="landing-hero">
+        <div className="brand-mark">JU</div>
+        <p className="eyebrow">JAHANGIRNAGAR UNIVERSITY</p>
+        <h1>Hall Management System</h1>
+        <p className="landing-copy">
+          A centralized digital portal for hall administration, student services,
+          room allocation, applications, complaints, payments and notices.
+        </p>
+        <div className="landing-actions">
+          <a className="primary-btn" href="/login">Sign in to portal</a>
+          <a className="secondary-btn" href="/api/health">System health</a>
+        </div>
+      </section>
+
+      <section className="feature-grid">
+        <article><span>01</span><h2>Student Portal</h2><p>View your profile, hall allocation, applications, complaints and notifications.</p></article>
+        <article><span>02</span><h2>Administration</h2><p>Monitor students, rooms, seats, applications and operational issues.</p></article>
+        <article><span>03</span><h2>Secure Access</h2><p>Credentials authentication with role-based sessions and protected dashboards.</p></article>
+      </section>
     </main>
   );
 }
