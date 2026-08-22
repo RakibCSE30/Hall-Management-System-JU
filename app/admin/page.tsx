@@ -42,6 +42,7 @@ export default async function AdminPage() {
 
       <nav className="admin-nav" aria-label="Administration navigation">
         <a href="/admin">Overview</a>
+        <a href="/admin/applications">Applications</a>
         <a href="/admin/rooms">Rooms & Seats</a>
         <a href="/admin/complaints">Complaints</a>
         <a href="/">Home</a>
@@ -56,11 +57,12 @@ export default async function AdminPage() {
 
       <section className="panel">
         <h2 style={{ marginTop: 0 }}>Version 0.3 control center</h2>
-        <p className="muted">Authentication and role-based routing are now connected to the first administration portal.</p>
+        <p className="muted">Authentication, role-based routing, and the first end-to-end seat application workflow are connected to PostgreSQL.</p>
         <div className="detail-list">
           <span>Signed in as <b>{session.user.role}</b></span>
           <span>Database <b>PostgreSQL · hall_management</b></span>
           <span>Dashboard API <b><a href="/api/dashboard">/api/dashboard</a></b></span>
+          <span>Applications <b><a href="/admin/applications">Review pending applications</a></b></span>
         </div>
       </section>
     </main>
